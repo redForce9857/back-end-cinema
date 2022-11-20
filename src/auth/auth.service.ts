@@ -1,16 +1,16 @@
 import { HttpException, Injectable, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
-import { UserModel } from 'src/user/model/user.model';
 import { AuthDto } from './dto/auth.dto';
 import {hash, genSalt, compare} from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/refresh.token';
+import { User } from 'src/user/model/user.model';
 
 @Injectable()
 export class AuthService {
-	constructor(@InjectModel(UserModel) 
-	private readonly UserModel: ModelType<UserModel>,
+	constructor(@InjectModel(User)
+	private readonly UserModel: ModelType<User>,
 	private readonly jwtService: JwtService
 	){}
 
@@ -28,6 +28,8 @@ export class AuthService {
 		})
 
 		const tokens = await this.issueTokenPair(String(newUser._id))
+
+		newUser.save()
 
 		return {
 			user: this.returnUserFields(newUser),
@@ -64,7 +66,7 @@ export class AuthService {
 		}
 	}
 
-	async validate(dto: AuthDto): Promise<UserModel>{
+	async validate(dto: AuthDto): Promise<User>{
 		const user = await this.UserModel.findOne({email: dto.email})
 		if (!user) {
 			throw new HttpException('Sorry this email is not exist', HttpStatus.NOT_FOUND)
@@ -91,11 +93,12 @@ export class AuthService {
 		return {refreshToken, accessToken}
 	}
 
-	returnUserFields(user: UserModel){
+	returnUserFields(user: User){
 		return {
 			_id: user._id,
 			email: user.email,
-			isAdmin: user.isAdmin
+			isAdmin: user.isAdmin,
+			favorites: user.favorites
 		}
 	}
 }

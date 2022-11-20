@@ -3,16 +3,16 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypegooseModule } from 'nestjs-typegoose';
-import { UserModel } from 'src/user/model/user.model';
 import { JwtModule } from '@nestjs/jwt';
 import { getJWTConfig } from 'src/configs/jwt.config';
 import { JwtStrategy } from './strategy /jwt.strategy';
+import { User } from 'src/user/model/user.model';
 
 @Module({
   imports: [
     TypegooseModule.forFeature([
       {
-      typegooseClass: UserModel,
+      typegooseClass: User,
       schemaOptions: {
         collection: 'User',
       }

@@ -4,12 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from "nestjs-typegoose";
 import { ModelType } from "@typegoose/typegoose/lib/types";
 import { Injectable } from "@nestjs/common";
-import { UserModel } from "src/user/model/user.model";
+import { User } from "src/user/model/user.model";
 
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy){
-	constructor(private readonly configService: ConfigService, @InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>){
+	constructor(private readonly configService: ConfigService, @InjectModel(User) private readonly UserModel: ModelType<User>){
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			ignoreExpiration: true,
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy){
 		})
 	}
 
-	async validate({_id}: Pick<UserModel, '_id'>){
+	async validate({_id}: Pick<User, '_id'>){
 		return await this.UserModel.findById(_id).exec()
 	}
 }

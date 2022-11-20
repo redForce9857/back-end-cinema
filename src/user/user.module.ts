@@ -3,13 +3,13 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { ConfigModule } from '@nestjs/config';
-import { UserModel } from './model/user.model';
+import { User } from './model/user.model';
 
 @Module({
   imports: [
     TypegooseModule.forFeature([
       {
-      typegooseClass: UserModel,
+      typegooseClass: User,
       schemaOptions: {
         collection: 'User'
       },
